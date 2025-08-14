@@ -57,7 +57,7 @@ FixNamespaceComments: true
 IncludeIsMainRegex: '(\.[^.]+)?$'
 IncludeIsMainSourceRegex: '(|\.t\.hh)$' 
 IndentCaseLabels: true
-IndentPPDirectives: AfterHash
+IndentPPDirectives: None
 IndentWidth:     4
 IndentWrappedFunctionNames: false
 JavaScriptQuotes: Leave
@@ -80,7 +80,7 @@ PenaltyBreakTemplateDeclaration: 10
 PenaltyExcessCharacter: 25
 PenaltyReturnTypeOnItsOwnLine: 10
 PointerAlignment: Left
-QualifierAlignment: Right
+QualifierAlignment: Left
 ReflowComments:  true
 SortIncludes:    CaseSensitive
 SortUsingDeclarations: true
