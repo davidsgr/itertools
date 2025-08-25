@@ -20,7 +20,7 @@ namespace itertools
  */
 //===========================================================================//
 
-class Exception : public std::runtime_exception
+class Exception : public std::exception
 {
     using Base = std::exception;
 
@@ -36,7 +36,13 @@ class Exception : public std::runtime_exception
     //! Return the line number where the error occurred
     unsigned long lineNumber() const { return m_line_number; }
 
+    // Return the what() message
+    const char* what() const noexcept final { return m_msg; }
+
   private:
+    //! Holds the error message
+    std::string m_msg;
+
     //! Holds the filename where the error occurred
     std::string m_filename;
 
@@ -130,8 +136,8 @@ class NotReachableException : public Exception
   private:
     // Construct the error messageß
     static std::string
-    buildErrorMessage(const std::string& filename, unsigned line_number);
-}
+    buildErrorMessage(const std::string& filename, unsigned long line_number);
+};
 
 //---------------------------------------------------------------------------//
 }  // namespace itertools

@@ -50,19 +50,19 @@
 namespace itertools
 {
 // Throw a DBC exception
-[[no_return]] void throwDBCException(const std::string& condition,
-                                     const std::string& condition_type,
-                                     const std::string& filename,
-                                     unsigned long line_number);
+[[noreturn]] void throwDBCException(const std::string& condition,
+                                    const std::string& condition_type,
+                                    const std::string& filename,
+                                    unsigned long line_number);
 
 // Throw a NotImplementedException
-[[no_return]] void throwNotImplementedException(const std::string& msg,
-                                                const std::string& filename,
-                                                unsigned long line_number);
+[[noreturn]] void throwNotImplementedException(const std::string& msg,
+                                               const std::string& filename,
+                                               unsigned long line_number);
 
 // Throw a NotReachableException
-[[no_return]] void throwNotReachableException(const std::string& filename,
-                                              unsigned long line_number);
+[[noreturn]] void throwNotReachableException(const std::string& filename,
+                                             unsigned long line_number);
 
 //---------------------------------------------------------------------------//
 }  // namespace itertools

@@ -27,7 +27,7 @@ void throwDBCException(const std::string& condition,
                        unsigned long line_number)
 {
     throw itertools::DBCException(
-        condition, condition_type, filename, linenumber);
+        condition, condition_type, filename, line_number);
 }
 
 //---------------------------------------------------------------------------//
