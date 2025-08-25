@@ -63,6 +63,9 @@ class Range
     // Return const ending iterator
     const_iterator cend() const;
 
+    //! Return size of range
+    IntegralType_t size() const { return (m_end - m_begin) / m_step; }
+
     //! Access begin value
     IntegralType_t beginValue() const { return m_begin; }
 
@@ -164,6 +167,8 @@ auto Range<IntegralType>::cend() const -> const_iterator
 /*!
  * \brief Create a range spanning 0...end with a step size of 1
  *
+ * \tparam IntegralType  The integral type of the range
+ *
  * \param[in] end  The ending value of the range
  *
  * \return An iterable range spanning 0 ... \p end with step size 1
@@ -177,6 +182,8 @@ Range<IntegralType>::range(IntegralType end)
 //---------------------------------------------------------------------------//
 /*!
  * \brief Create a range spanning begin...end with an optional step size
+ *
+ * \tparam IntegralType  The integral type of the range
  *
  * \param[in] begin  The beginning value of the range
  * \param[in] end    The ending value of the range
