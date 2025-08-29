@@ -75,7 +75,7 @@ DBCException::DBCException(const std::string& test_string,
 std::string DBCException::buildErrorMessage(const std::string& test_string,
                                             const std::string& test_type,
                                             const std::string& filename,
-                                            unsigned int line_number)
+                                            unsigned long line_number)
 {
     return test_string + " failed " + test_type + " DBC test in " + filename
            + ":" + std::to_string(line_number);
@@ -104,6 +104,7 @@ NotImplementedException::NotImplementedException(const std::string& msg,
                msg, filename, line_number),
            filename,
            line_number)
+    , m_msg(msg)
 {
     /* * */
 }
@@ -122,9 +123,12 @@ NotImplementedException::NotImplementedException(const std::string& msg,
  *
  * \return A descriptive message describing the unimplemented capability
  */
-const std::string& NotImplementedException::message() const
+std::string
+NotImplementedException::buildErrorMessage(const std::string& msg,
+                                           const std::string& filename,
+                                           unsigned long line_number)
 {
-    return msg + " not implemented at file " + filename + ":"
+    return msg + " not implemented at " + filename + ":"
            + std::to_string(line_number);
 }
 

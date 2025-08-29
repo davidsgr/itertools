@@ -37,7 +37,7 @@ class Exception : public std::exception
     unsigned long lineNumber() const { return m_line_number; }
 
     // Return the what() message
-    const char* what() const noexcept final { return m_msg; }
+    const char* what() const noexcept final { return m_msg.c_str(); }
 
   private:
     //! Holds the error message

@@ -25,7 +25,7 @@ TEST(ExceptionTest, DBCException)
     EXPECT_EQ("precondition", e.testType());
 
     EXPECT_EQ("test_string failed precondition DBC test in filename:99",
-              e.what());
+              std::string(e.what()));
 }
 
 //---------------------------------------------------------------------------//
@@ -37,7 +37,7 @@ TEST(ExceptionTest, NotImplementedException)
     EXPECT_EQ(99, e.lineNumber());
     EXPECT_EQ("message", e.message());
 
-    EXPECT_EQ("message not implemeted at filename:99", e.what());
+    EXPECT_EQ("message not implemented at filename:99", std::string(e.what()));
 }
 
 //---------------------------------------------------------------------------//
@@ -49,7 +49,7 @@ TEST(ExceptionTest, NotReachableException)
     EXPECT_EQ("filename", e.filename());
     EXPECT_EQ(99, e.lineNumber());
     EXPECT_EQ("Logically unreachable code block reached at filename:99",
-              e.what());
+              std::string(e.what()));
 }
 
 //---------------------------------------------------------------------------//

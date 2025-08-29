@@ -22,7 +22,7 @@ foreach (_TEST ${UNIT_TESTS})
     )
   target_link_libraries(
     ${_TEST}
-    PRIVATE GTest::gtest GTest::gtest_main
+    PRIVATE IterToolsCore GTest::gtest GTest::gtest_main
     )
 
   include(GoogleTest)
