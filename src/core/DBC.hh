@@ -10,6 +10,8 @@
 
 #include <string>
 
+#include "Macros.hh"
+
 #ifndef ITERTOOLS_DBC
 #define ITERTOOLS_DBC true
 #endif
@@ -66,11 +68,6 @@ namespace itertools
 
 //---------------------------------------------------------------------------//
 }  // namespace itertools
-
-//---------------------------------------------------------------------------//
-// INLINE DEFINITIONS
-//---------------------------------------------------------------------------//
-// #include "DBC.i.hh"
 
 //---------------------------------------------------------------------------//
 #endif  // ITERTOOLS_SRC_CORE_DBC_HH
