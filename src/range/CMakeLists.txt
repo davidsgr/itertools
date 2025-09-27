@@ -7,6 +7,7 @@
 set(HEADERS
   Range.hh
   detail/RangeIterator.hh
+  detail/RangeIterator.i.hh
   )
 
 set(SOURCES
@@ -27,6 +28,6 @@ set(SOURCES
 install(FILES ${HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/range)
 
 # Add tests if testing is enabled
-#if (ITERTOOLS_ENABLE_TESTS)
-#  add_subdirectory(tests)
-#endif ()
+if (ITERTOOLS_ENABLE_TESTS)
+  add_subdirectory(detail/tests)
+endif ()
