@@ -180,6 +180,12 @@ TEST(RangeIteratorTest, comparison)
     EXPECT_TRUE(iter3 >= iter3);
     EXPECT_FALSE(iter1 > iter2);
     EXPECT_FALSE(iter2 < iter3);
+
+    RangeIterator<int> iter4(6, -2);
+    RangeIterator<int> iter5(4, -2);
+    EXPECT_TRUE(iter4 < iter5);
+    EXPECT_TRUE(iter4 <= iter4);
+    EXPECT_TRUE(iter5 > iter4);
 }
 
 //---------------------------------------------------------------------------//
@@ -187,8 +193,8 @@ TEST(RangeIteratorTest, comparison)
 TEST(RangeIteratorTest, make_range_iterator)
 {
     auto iter = itertools::detail::makeRangeIterator(4, 2);
-    EXPECT_EQ(4, iter.value());
     EXPECT_EQ(2, iter.step());
+    EXPECT_EQ(4, iter.value());
 }
 
 //---------------------------------------------------------------------------//
