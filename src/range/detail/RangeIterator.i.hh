@@ -13,6 +13,27 @@
 
 #include "core/DBC.hh"
 
+namespace
+{
+//---------------------------------------------------------------------------//
+// ANONYMOUS HELPER FUNCTIONS
+//---------------------------------------------------------------------------//
+/*!
+ * \brief Implements the sign function
+ *
+ * This function returns -1 for negative numbers and +1 for positive numbers.
+ * This is taken from
+ * https://stackoverflow.com/questions/1903954/is-there-a-standard-sign-function-signum-sgn-in-c-c
+ */
+template<typename T>
+inline constexpr int sign(T val)
+{
+    return (T(0) < val) - (val < T(0));
+}
+
+//---------------------------------------------------------------------------//
+}  // anonymous namespace
+
 namespace itertools
 {
 namespace detail
@@ -62,7 +83,8 @@ RangeIterator<Integer>::RangeIterator(Integer value, Integer step)
 template<typename Integer>
 auto RangeIterator<Integer>::operator++() -> This&
 {
-    IT_REQUIRE(m_value <= std::numeric_limits<Integer>::max() - m_step + 1);
+    IT_REQUIRE(m_value <= std::numeric_limits<Integer>::max()
+                              - sign(m_step) * (m_step + 1));
 
     m_value += m_step;
     return *this;
@@ -77,7 +99,8 @@ auto RangeIterator<Integer>::operator++() -> This&
 template<typename Integer>
 auto RangeIterator<Integer>::operator++(int) -> This
 {
-    IT_REQUIRE(m_value <= std::numeric_limits<Integer>::max() - m_step + 1);
+    IT_REQUIRE(m_value <= std::numeric_limits<Integer>::max()
+                              - sign(m_step) * (m_step + 1));
 
     This copy = *this;
     ++(*this);
@@ -95,7 +118,8 @@ auto RangeIterator<Integer>::operator++(int) -> This
 template<typename Integer>
 auto RangeIterator<Integer>::operator--() -> This&
 {
-    IT_REQUIRE(m_value >= std::numeric_limits<Integer>::lowest() + m_step);
+    IT_REQUIRE(m_value >= std::numeric_limits<Integer>::lowest()
+                              + sign(m_step) * m_step);
 
     m_value -= m_step;
     return *this;
@@ -110,7 +134,8 @@ auto RangeIterator<Integer>::operator--() -> This&
 template<typename Integer>
 auto RangeIterator<Integer>::operator--(int) -> This
 {
-    IT_REQUIRE(m_value >= std::numeric_limits<Integer>::lowest() + m_step);
+    IT_REQUIRE(m_value >= std::numeric_limits<Integer>::lowest()
+                              + sign(m_step) * m_step);
 
     This copy = *this;
     --(*this);
@@ -131,7 +156,8 @@ template<typename Integer>
 auto RangeIterator<Integer>::operator+=(difference_type n) -> This&
 {
     IT_REQUIRE(std::isfinite(n));
-    IT_REQUIRE(m_value <= std::numeric_limits<Integer>::max() - n * m_step + 1);
+    IT_REQUIRE(m_value <= std::numeric_limits<Integer>::max()
+                              - sign(m_step) * (n * m_step - 1));
 
     m_value += n * m_step;
     return *this;
@@ -149,7 +175,8 @@ template<typename Integer>
 auto RangeIterator<Integer>::operator-=(difference_type n) -> This&
 {
     IT_REQUIRE(std::isfinite(n));
-    IT_REQUIRE(m_value >= std::numeric_limits<Integer>::lowest() + n * m_step);
+    IT_REQUIRE(m_value >= std::numeric_limits<Integer>::lowest()
+                              + sign(m_step) * n * m_step);
 
     m_value -= n * m_step;
     return *this;
@@ -175,8 +202,8 @@ auto operator+(const RangeIterator<Integer1>& iter, Integer2 n)
 {
     static_assert(std::is_integral_v<Integer2>);
     IT_REQUIRE(std::isfinite(n));
-    IT_REQUIRE(iter.value()
-               <= std::numeric_limits<Integer1>::max() - n * iter.step() + 1);
+    IT_REQUIRE(iter.value() <= std::numeric_limits<Integer1>::max()
+                                   - sign(iter.step()) * (n * iter.step() - 1));
 
     using IT_t = std::common_type_t<Integer1, Integer2>;
 
@@ -202,8 +229,8 @@ auto operator+(Integer1 n, const RangeIterator<Integer2>& iter)
 {
     static_assert(std::is_integral_v<Integer1>);
     IT_REQUIRE(std::isfinite(n));
-    IT_REQUIRE(iter.value()
-               <= std::numeric_limits<Integer1>::max() - n * iter.step() + 1);
+    IT_REQUIRE(iter.value() <= std::numeric_limits<Integer1>::max()
+                                   - sign(iter.step()) * (n * iter.step() - 1));
 
     using IT_t = std::common_type_t<Integer1, Integer2>;
 
@@ -233,8 +260,8 @@ auto operator+(const RangeIterator<Integer1>& iter1,
 {
     IT_REQUIRE(iter1.step() == iter2.step());
     using IT_t = std::common_type_t<Integer1, Integer2>;
-    IT_REQUIRE(iter1.value()
-               <= std::numeric_limits<IT_t>::max() - iter2.value());
+    IT_REQUIRE(iter1.value() <= std::numeric_limits<IT_t>::max()
+                                    - sign(iter1.step()) * iter2.value());
 
     return RangeIterator<IT_t>(iter1.value() + iter2.value(), iter1.step());
 }
@@ -258,8 +285,8 @@ auto operator-(const RangeIterator<Integer1>& iter, Integer2 n)
     static_assert(std::is_integral_v<Integer2>);
     using IT_t = std::common_type_t<Integer1, Integer2>;
     IT_REQUIRE(std::isfinite(n));
-    IT_REQUIRE(iter.value()
-               >= std::numeric_limits<IT_t>::lowest() + n * iter.step());
+    IT_REQUIRE(iter.value() >= std::numeric_limits<IT_t>::lowest()
+                                   + sign(iter.step()) * n * iter.step());
 
     return RangeIterator<IT_t>(iter.value() - n * iter.step(), iter.step());
 }
@@ -298,8 +325,10 @@ operator-(const RangeIterator<Integer1>& iter1,
 /*!
  * \brief Returns whether \p iter1 and \p iter2 are equal
  *
- * Two range iterators are considered equal if both the value and their step
- * size are equal
+ * Two range iterators are considered equal if their values are equal
+ *
+ * \warning It is the responsibility of the caller to ensure that the two
+ *          range iterators being compared have the same step size
  *
  * \tparam Integer1  The integral type for the first range iterator
  * \tparam Integer2  The integral type for the second range iterator
@@ -313,7 +342,9 @@ template<typename Integer1, typename Integer2>
 bool operator==(const RangeIterator<Integer1>& iter1,
                 const RangeIterator<Integer2>& iter2)
 {
-    return iter1.value() == iter2.value() && iter1.step() == iter2.step();
+    IT_REQUIRE(iter1.step() == iter2.step());
+
+    return iter1.value() == iter2.value();
 }
 
 //---------------------------------------------------------------------------//
@@ -356,7 +387,8 @@ bool operator<(const RangeIterator<Integer1>& iter1,
 {
     IT_REQUIRE(iter1.step() == iter2.step());
 
-    return iter1.value() < iter2.value();
+    return sign(iter1.step()) * iter1.value()
+           < sign(iter1.step()) * iter2.value();
 }
 
 //---------------------------------------------------------------------------//
@@ -380,7 +412,8 @@ bool operator<=(const RangeIterator<Integer1>& iter1,
 {
     IT_REQUIRE(iter1.step() == iter2.step());
 
-    return iter1.value() <= iter2.value();
+    return sign(iter1.step()) * iter1.value()
+           <= sign(iter1.step()) * iter2.value();
 }
 
 //---------------------------------------------------------------------------//
