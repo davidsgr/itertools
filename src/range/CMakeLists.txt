@@ -29,5 +29,6 @@ install(FILES ${HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/range)
 
 # Add tests if testing is enabled
 if (ITERTOOLS_ENABLE_TESTS)
+  add_subdirectory(tests)
   add_subdirectory(detail/tests)
 endif ()
