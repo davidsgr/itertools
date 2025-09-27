@@ -18,6 +18,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Add exportation of compile commands (needed by many IDEs)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# Add project cmake modules to module path
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
 # Define the include path for all IterTools code
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
